@@ -140,7 +140,7 @@ class RelationBehavior extends Behavior
 
             $models = isset($this->_deleteds[$name]) ? $this->_deleteds[$name] : [];
             foreach ($models as $model) {
-                $owner->unlink($name, $model, $definition->deleteCascade);
+                $owner->unlink($name, $model, $definition->deleteOnUnlink);
             }
         }
 
