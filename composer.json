@@ -1,0 +1,41 @@
+{
+    "name": "solutosoft/yii-relations",
+    "description": "Load, validate and save automatically related Active Record models",
+    "keywords": ["yii2", "active-record", "behavior", "relation", "fill", "load"],
+    "homepage": "https://github.com/solutosoft/yii-audit-record",
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Leandro Guindani Gehlen",
+            "email": "leandrogehlen@gmail.com",
+            "homepage": "https://github.com/leandrogehlen"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/solutosoft/yii-relations/issues?state=open",
+        "source": "https://github.com/solutosoft/yii-relations"
+    },
+    "repositories": [
+      {
+        "type": "composer",
+        "url": "https://asset-packagist.org"
+      }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+      "yiisoft/yii2": "~2.0.14"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.4"
+    },
+    "autoload": {
+        "psr-4": {
+          "soluto\\relations\\": "src",
+          "soluto\\relations\\tests\\": "tests"
+        },
+        "exclude-from-classmap": [
+            "/tests/"
+        ]
+    }
+}
