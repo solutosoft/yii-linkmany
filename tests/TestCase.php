@@ -1,6 +1,6 @@
 <?php
 
-namespace soluto\relations\tests;
+namespace solutosoft\linkmany\tests;
 
 use Yii;
 use yii\helpers\ArrayHelper;

@@ -1,6 +1,6 @@
 <?php
 
-namespace soluto\relations;
+namespace solutosoft\linkmany;
 
 use yii\base\BaseObject;
 

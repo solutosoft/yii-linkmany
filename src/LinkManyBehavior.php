@@ -1,6 +1,6 @@
 <?php
 
-namespace soluto\relations;
+namespace solutosoft\linkmany;
 
 use Yii;
 use yii\base\Behavior;
@@ -8,7 +8,7 @@ use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
-class RelationBehavior extends Behavior
+class LinkManyBehavior extends Behavior
 {
     /**
      * @var \yii\db\ActiveRecord|null the owner of this behavior
@@ -45,8 +45,8 @@ class RelationBehavior extends Behavior
     public function events()
     {
         return [
-            ActiveRecord::EVENT_AFTER_INSERT    => 'afterSave',
-            ActiveRecord::EVENT_AFTER_UPDATE    => 'afterSave'
+            ActiveRecord::EVENT_AFTER_INSERT => 'afterSave',
+            ActiveRecord::EVENT_AFTER_UPDATE => 'afterSave'
         ];
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace soluto\relations\tests\models;
+namespace solutosoft\linkmany\tests\models;
 
 use yii\db\ActiveRecord;
 

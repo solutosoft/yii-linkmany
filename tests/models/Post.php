@@ -1,8 +1,9 @@
 <?php
 
-namespace soluto\relations\tests\models;
+namespace solutosoft\linkmany\tests\models;
 
-use soluto\relations\RelationBehavior;
+use solutosoft\linkmany\LinkManyBehavior;
+use solutosoft\linkmany\RelationBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -21,7 +22,7 @@ class Post extends ActiveRecord
     {
         return [
             'relation' => [
-                'class' => RelationBehavior::class,
+                'class' => LinkManyBehavior::class,
                 'relations' => [
                     'languages',
                     'tags'

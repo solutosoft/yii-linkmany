@@ -1,19 +1,19 @@
 <?php
 
-namespace soluto\relations\tests;
+namespace solutosoft\linkmany\tests;
 
-use soluto\relations\RelationBehavior;
-use soluto\relations\tests\models\Post;
-//use soluto\relations\tests\models\PostLanguage;
-//use soluto\relations\tests\models\Tag;
+use solutosoft\linkmany\LinkManyBehavior;
+use solutosoft\linkmany\tests\models\Post;
+//use solutosoft\linkmany\tests\models\PostLanguage;
+//use solutosoft\linkmany\tests\models\Tag;
 
-class RelationBehaviorTest extends TestCase
+class LinkManyBehaviorTest extends TestCase
 {
     public function testInitException()
     {
         $this->setExpectedException('\yii\base\InvalidConfigException');
 
-        new RelationBehavior([
+        new LinkManyBehavior([
             'relations' => [
                 ['invalid' => true]
             ]
@@ -22,7 +22,7 @@ class RelationBehaviorTest extends TestCase
 
     public function testInitSuccess()
     {
-        new RelationBehavior([
+        new LinkManyBehavior([
             'relations' => [
                 'relation_1',
                 'relation_2' => [

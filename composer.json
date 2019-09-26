@@ -2,7 +2,7 @@
     "name": "solutosoft/yii-relations",
     "description": "Load, validate and save automatically related Active Record models",
     "keywords": ["yii2", "active-record", "behavior", "relation", "fill", "load"],
-    "homepage": "https://github.com/solutosoft/yii-audit-record",
+    "homepage": "https://github.com/solutosoft/yii-linkmany",
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "authors": [
@@ -13,8 +13,8 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/solutosoft/yii-relations/issues?state=open",
-        "source": "https://github.com/solutosoft/yii-relations"
+        "issues": "https://github.com/solutosoft/yii-linkmany/issues?state=open",
+        "source": "https://github.com/solutosoft/yii-linkmany"
     },
     "repositories": [
       {
@@ -31,8 +31,8 @@
     },
     "autoload": {
         "psr-4": {
-          "soluto\\relations\\": "src",
-          "soluto\\relations\\tests\\": "tests"
+          "solutosoft\\linkmany\\": "src",
+          "solutosoft\\linkmany\\tests\\": "tests"
         },
         "exclude-from-classmap": [
             "/tests/"

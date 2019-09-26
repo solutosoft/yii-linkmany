@@ -1,10 +1,10 @@
-# Yii Relations
+# Yii LinkMany
 
-Load, validate and save automatically related Active Record models.
+Load, validate and save automatically `hasMany` relations.
 
 
-[![Build Status](https://travis-ci.org/solutosoft/yii-relations.svg?branch=master)](https://travis-ci.org/solutosoft/yii-relations)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/solutosoft/yii-relations/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/solutosoft/yii-relations/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/solutosoft/yii-relations/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/solutosoft/yii-relations/?branch=master)
-[![Total Downloads](https://poser.pugx.org/solutosoft/yii-relations/downloads.png)](https://packagist.org/packages/solutosoft/yii-relations)
-[![Latest Stable Version](https://poser.pugx.org/solutosoft/yii-relations/v/stable.png)](https://packagist.org/packages/solutosoft/yii-relations)
+[![Build Status](https://travis-ci.org/solutosoft/yii-linkmany.svg?branch=master)](https://travis-ci.org/solutosoft/yii-linkmany)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/solutosoft/yii-linkmany/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/solutosoft/yii-linkmany/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/solutosoft/yii-linkmany/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/solutosoft/yii-linkmany/?branch=master)
+[![Total Downloads](https://poser.pugx.org/solutosoft/yii-linkmany/downloads.png)](https://packagist.org/packages/solutosoft/yii-linkmany)
+[![Latest Stable Version](https://poser.pugx.org/solutosoft/yii-linkmany/v/stable.png)](https://packagist.org/packages/solutosoft/yii-linkmany)
