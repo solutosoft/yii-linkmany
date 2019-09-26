@@ -6,7 +6,6 @@ use Yii;
 use yii\base\Behavior;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
-use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 
 class RelationBehavior extends Behavior
@@ -119,9 +118,8 @@ class RelationBehavior extends Behavior
 
     /**
      * Handles owner 'afterInsert' and 'afterUpdate' events, ensuring related models are linked.
-     * @param \yii\base\Event $event event instance.
      */
-    public function afterSave($event)
+    public function afterSave()
     {
         $owner = $this->owner;
         $relateds = $this->owner->getRelatedRecords();
@@ -215,7 +213,7 @@ class RelationBehavior extends Behavior
     /**
      * Extracts primary key from data
      * @param array $data
-     * @param \yii\db\ActiveQueryInterface|\yii\db\ActiveQuery $relation
+     * @param \yii\db\ActiveQuery $relation
      * @return array
      */
     protected function extractPrimaryKey($data, $relation)
