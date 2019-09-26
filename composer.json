@@ -1,5 +1,5 @@
 {
-    "name": "solutosoft/yii-relations",
+    "name": "solutosoft/yii-linkmany",
     "description": "Load, validate and save automatically related Active Record models",
     "keywords": ["yii2", "active-record", "behavior", "relation", "fill", "load"],
     "homepage": "https://github.com/solutosoft/yii-linkmany",
