@@ -83,7 +83,8 @@ class RelationBehavior extends Behavior
                 $primaryKey = $this->extractPrimaryKey($item, $relation);
 
                 if (($index = array_search($primaryKey, $references)) === false) {
-                    $model = $relation->via ? $relation->modelClass::findOne($item) : new $relation->modelClass();
+                    $modelClass = $relation->modelClass;
+                    $model = $relation->via ? $modelClass::findOne($item) : new $modelClass();
 
                     if ($model !== null) {
                         $this->_changeds[$name][] = $model;
@@ -184,10 +185,11 @@ class RelationBehavior extends Behavior
     protected function normalizeData($data, $relation)
     {
         $result = [];
+        $modelClass = $relation->modelClass;
 
         foreach ($data as $item) {
             foreach ($relation->link as $attribute => $reference) {
-                if (!isset($item[$attribute]) && in_array($attribute, $relation->modelClass::primaryKey())) {
+                if (!isset($item[$attribute]) && in_array($attribute, $modelClass::primaryKey())) {
                     $item[$attribute] = $this->owner->{$reference};
                 }
             }
@@ -222,8 +224,9 @@ class RelationBehavior extends Behavior
             return $data;
         } else {
             $result = [];
+            $modelClass = $relation->modelClass;
 
-            foreach ($relation->modelClass::primaryKey() as $key) {
+            foreach ($modelClass::primaryKey() as $key) {
                 if (isset($data[$key])) {
                     $result[$key] = $data[$key];
                 }
