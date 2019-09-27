@@ -73,43 +73,57 @@ class LinkManyBehavior extends Behavior
                 continue;
             }
 
-            $records = [];
             $relation = $owner->getRelation($name);
-            $relateds =  $owner->{$name};
-            $references = $this->initReferences($relateds);
-            $relatedData = !$relation->via ? $this->normalizeData($data[$name], $relation) : $data[$name];
+            $records = [];
 
-            foreach ($relatedData as $item) {
-                $primaryKey = $this->extractPrimaryKey($item, $relation);
-
-                if (($index = array_search($primaryKey, $references)) === false) {
+            if ($owner->getIsNewRecord()) {
+                foreach ($data[$name] as $item) {
                     $modelClass = $relation->modelClass;
                     $model = $relation->via ? $modelClass::findOne($item) : new $modelClass();
 
+                    if (!$relation->via) {
+                        $this->fillRelation($model, $item, $definition);
+                    }
+
                     if ($model !== null) {
                         $this->_changeds[$name][] = $model;
+                        $records[] = $model;
                     }
-                } else {
-                    $model = $relateds[$index];
                 }
+            } else {
+                $relateds =  $owner->{$name};
+                $references = $this->initReferences($relateds);
+                $relatedData = !$relation->via ? $this->normalizeData($data[$name], $relation) : $data[$name];
 
-                if ($model !== null) {
-                    if (!$relation->via) {
-                        $model->load($item, $definition->formName);
-                        if ($definition->validate) {
-                            $model->validate();
+                foreach ($relatedData as $item) {
+                    $primaryKey = $this->extractPrimaryKey($item, $relation);
+
+                    if (($index = array_search($primaryKey, $references)) === false) {
+                        $modelClass = $relation->modelClass;
+                        $model = $relation->via ? $modelClass::findOne($item) : new $modelClass();
+
+                        if ($model !== null) {
+                            $this->_changeds[$name][] = $model;
+                        }
+                    } else {
+                        $model = $relateds[$index];
+                    }
+
+                    if ($model !== null) {
+                        if (!$relation->via) {
+                            $this->fillRelation($model, $item, $definition);
+                        }
+
+                        $records[] = $model;
+                    }
+
+                    foreach ($records as $i => $record) {
+                        $primaryKey = $this->normalizePrimaryKey($record->getPrimaryKey());
+
+                        if (array_search($primaryKey, $references) === false) {
+                            $this->_deleteds[$name][] = $relateds[$i];
                         }
                     }
-
-                    $records[] = $model;
-                }
-            }
-
-            foreach ($records as $i => $record) {
-                $primaryKey = $this->normalizePrimaryKey($record->getPrimaryKey());
-
-                if (array_search($primaryKey, $references) === false) {
-                    $this->_deleteds[$name][] = $relateds[$i];
                 }
             }
 
@@ -210,6 +224,21 @@ class LinkManyBehavior extends Behavior
             $primaryKey = $primaryKey->__toString();
         }
         return $primaryKey;
+    }
+
+    /**
+     * Populates the relational model with input data.
+     * @param ActiveRecord $model
+     * @param array $data
+     * @param RelationDefinition $definition
+     * @return void
+     */
+    protected function fillRelation($model, $data, $definition)
+    {
+        $model->load($data, $definition->formName);
+        if ($definition->validate) {
+            $model->validate();
+        }
     }
 
     /**

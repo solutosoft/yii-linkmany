@@ -32,7 +32,7 @@ class LinkManyBehaviorTest extends TestCase
         ]);
     }
 
-    /*public function testFillNewRecord()
+    public function testFillNewRecord()
     {
         $post = new Post();
         $post->fill([
@@ -49,7 +49,7 @@ class LinkManyBehaviorTest extends TestCase
                     'url' => '/posts/en-modified'
                 ]
             ]
-        ]);
+        ], '');
 
         $this->assertCount(2, $post->tags);
         $this->assertCount(2, $post->languages);
@@ -90,7 +90,7 @@ class LinkManyBehaviorTest extends TestCase
         foreach ($post->languages as $lang) {
             $this->assertFalse($lang->getIsNewRecord());
         }
-    }*/
+    }
 
     public function testSaveHasMany()
     {
