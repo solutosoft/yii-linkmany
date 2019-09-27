@@ -46,7 +46,7 @@ class Post extends ActiveRecord
             'linkManyBehavior' => [
                 'class' => LinkManyBehavior::class,
                 'relations' => [
-                    'tags'
+                    'tags',
                     'messages' => [
                         'formName'  => 'Post[messages]',
                         'validate' => false,
@@ -79,7 +79,7 @@ class PostController extends Controller
 {
     public function actionCreate()
     {
-        $model = new Item();
+        $model = new Post();
 
         if ($model->fill(Yii::$app->request->post())) {
             $model->save(); // save the model and relations
