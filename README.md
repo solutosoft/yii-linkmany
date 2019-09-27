@@ -93,3 +93,11 @@ class PostController extends Controller
 }
 ```
 
+## Credits
+
+This Package is inspired by:
+
+- [la-haute-societe/yii2-save-relations-behavior](https://github.com/la-haute-societe/yii2-save-relations-behavior)
+- [yii2tech/ar-linkmany](https://github.com/yii2tech/ar-linkmany).
+
+I wanted to have a combination of both. Thanks to both authors.
