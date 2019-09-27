@@ -10,7 +10,7 @@ Load, validate and save automatically `hasMany` relations.
 [![Latest Stable Version](https://poser.pugx.org/solutosoft/yii-linkmany/v/stable.png)](https://packagist.org/packages/solutosoft/yii-linkmany)
 
 
-nstallation
+Installation
 ------------
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
