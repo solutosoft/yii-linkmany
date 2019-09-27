@@ -143,7 +143,6 @@ class LinkManyBehavior extends Behavior
 
         foreach ($this->relations as $definition) {
             $name = $definition->name;
-            $definition = $this->findDefinition($name);
             $records = ArrayHelper::getValue($relateds, $name, []);
 
             $models = isset($this->_changeds[$name]) ? $this->_changeds[$name] : [];
@@ -280,21 +279,5 @@ class LinkManyBehavior extends Behavior
             }
         }
         return $result;
-    }
-
-
-    /**
-     * Finds relation definition by name
-     * @param string $name The definition name
-     * @return RelationDefinition
-     */
-    private function findDefinition($name)
-    {
-        foreach ($this->relations as $relation) {
-            if ($relation->name === $name) {
-                return $relation;
-            }
-        }
-        return null;
     }
 }
