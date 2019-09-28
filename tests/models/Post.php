@@ -3,9 +3,7 @@
 namespace solutosoft\linkmany\tests\models;
 
 use solutosoft\linkmany\LinkManyBehavior;
-use solutosoft\linkmany\RelationBehavior;
 use yii\db\ActiveRecord;
-use yii\web\IdentityInterface;
 
 /**
  * @property string $title
@@ -25,7 +23,8 @@ class Post extends ActiveRecord
                 'class' => LinkManyBehavior::class,
                 'relations' => [
                     'languages',
-                    'tags'
+                    'tags',
+                    'comments'
                 ]
             ]
         ];
@@ -45,6 +44,14 @@ class Post extends ActiveRecord
     public function getLanguages()
     {
         return $this->hasMany(PostLanguage::class, ['post_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getComments()
+    {
+        return $this->hasMany(PostComment::class, ['post_id' => 'id']);
     }
 
     /**

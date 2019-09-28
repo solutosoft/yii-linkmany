@@ -101,6 +101,31 @@ class LinkManyBehaviorTest extends TestCase
             'title' => 'modified title',
             'content' => 'modified content',
             'author_id' => 2,
+            'comments' => [
+                [
+                    'content' => 'comment 2',
+                ],[
+                    'content' => 'comment 3',
+                ]
+            ]
+        ],'');
+
+
+        $post->save();
+        $this->assertCount(2, $post->languages);
+
+        $post->refresh();
+        $this->assertCount(2, $post->languages);
+
+    }
+
+    public function testSaveHasManyCompositeKey()
+    {
+        $post = Post::findOne(1);
+        $post->fill([
+            'title' => 'modified title',
+            'content' => 'modified content',
+            'author_id' => 2,
             'languages' => [
                 [
                     'language' => 'ja',
@@ -120,6 +145,7 @@ class LinkManyBehaviorTest extends TestCase
         $this->assertCount(2, $post->languages);
 
     }
+
 
     public function testSaveHasManyViaTable()
     {

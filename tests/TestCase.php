@@ -105,6 +105,12 @@ class TestCase extends \PHPUnit\Framework\TestCase
             'PRIMARY KEY(post_id, language)'
         ])->execute();
 
+        $db->createCommand()->createTable('post_comment', [
+            'id' => 'pk',
+            'post_id' => 'integer',
+            'content' => 'string'
+        ])->execute();
+
         $db->createCommand()->batchInsert('tag', ['id', 'name', 'color'], [
             [1, 'tag_1', '#aaaaaa'],
             [2, 'tag_2', '#bbbbbb'],
@@ -132,6 +138,10 @@ class TestCase extends \PHPUnit\Framework\TestCase
         $db->createCommand()->batchInsert('post_language', ['post_id', 'language', 'url'], [
             [1, 'en', '/posts/en'],
             [1, 'pt-br', '/posts/pt-br'],
+        ])->execute();
+
+        $db->createCommand()->batchInsert('post_comment', ['id', 'post_id', 'content'], [
+            [1, 1, 'comment 1']
         ])->execute();
 
     }
