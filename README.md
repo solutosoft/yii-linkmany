@@ -81,6 +81,22 @@ class PostController extends Controller
     {
         $model = new Post();
 
+
+        /**
+         * $_POST could be something like:
+         * [
+         *     'tags' => [1,2]
+         *     'comments' => [
+         *         [
+         *             'subject' => 'First comment',
+         *             'content' => 'This is de fist comment',
+         *         ], [
+         *             'subject' => 'Second comment',
+         *             'content' => 'This is de second comment',
+         *         ]
+         *     ]
+         * ];
+         */
         if ($model->fill(Yii::$app->request->post())) {
             $model->save(); // save the model and relations
             return $this->redirect(['view']);
