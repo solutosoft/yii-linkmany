@@ -18,7 +18,8 @@ class PostComment extends ActiveRecord
     {
         return [
             [['post_id'], 'integer'],
-            [['content'], 'string']
+            [['subject', 'content'], 'string'],
+            [['subject', 'content'], 'required']
         ];
     }
 }

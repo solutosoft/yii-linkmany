@@ -108,6 +108,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
         $db->createCommand()->createTable('post_comment', [
             'id' => 'pk',
             'post_id' => 'integer',
+            'subject' => 'string',
             'content' => 'string'
         ])->execute();
 
@@ -140,8 +141,8 @@ class TestCase extends \PHPUnit\Framework\TestCase
             [1, 'pt-br', '/posts/pt-br'],
         ])->execute();
 
-        $db->createCommand()->batchInsert('post_comment', ['id', 'post_id', 'content'], [
-            [1, 1, 'comment 1']
+        $db->createCommand()->batchInsert('post_comment', ['id', 'post_id', 'subject', 'content'], [
+            [1, 1, 'subject 1', 'comment 1']
         ])->execute();
 
     }

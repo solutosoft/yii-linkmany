@@ -179,4 +179,20 @@ class LinkManyBehaviorTest extends TestCase
         $post->save();
         $this->assertCount(1, $post->tags);
     }
+
+    public function testValidate()
+    {
+        $post = Post::findOne(1);
+        $post->fill([
+            'comments' => [
+                [],[]
+            ]
+        ],'');
+
+        $post->validate();
+
+        $errors = $post->getErrors();
+        $this->assertArrayHasKey('comments', $errors);
+        $this->assertCount(2, $errors['comments']);
+    }
 }

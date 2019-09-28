@@ -45,7 +45,8 @@ class LinkManyBehavior extends Behavior
     {
         return [
             ActiveRecord::EVENT_AFTER_INSERT => 'afterSave',
-            ActiveRecord::EVENT_AFTER_UPDATE => 'afterSave'
+            ActiveRecord::EVENT_AFTER_UPDATE => 'afterSave',
+            ActiveRecord::EVENT_AFTER_VALIDATE => 'afterValidate'
         ];
     }
 
@@ -160,6 +161,30 @@ class LinkManyBehavior extends Behavior
     }
 
 
+    public function afterValidate()
+    {
+        foreach ($this->relations as $definition) {
+            $name = $definition->name;
+
+            if (!$definition->validate) {
+                continue;
+            }
+
+            $errors = [];
+            $models = isset($this->_changeds[$name]) ? $this->_changeds[$name] : [];
+
+            foreach ($models as $model) {
+                if (!$model->validate()) {
+                    $errors[] = $model->getErrors();
+                }
+            }
+
+            foreach ($errors as $error) {
+                $this->owner->addError($name, $error);
+            }
+        }
+    }
+
      /**
      * Creates definition objects and initializes them.
      */
@@ -233,9 +258,6 @@ class LinkManyBehavior extends Behavior
     protected function fillRelation($model, $data, $definition)
     {
         $model->load($data, $definition->formName);
-        if ($definition->validate) {
-            $model->validate();
-        }
     }
 
     /**
