@@ -82,7 +82,7 @@ class LinkManyBehavior extends Behavior
                     $model = $relation->via ? $modelClass::findOne($item) : new $modelClass();
 
                     if (!$relation->via) {
-                        $this->fillRelation($model, $item, $definition);
+                        $this->fillRelation($model, $item, $definition->formName);
                     }
 
                     if ($model !== null) {
@@ -111,7 +111,7 @@ class LinkManyBehavior extends Behavior
 
                     if ($model !== null) {
                         if (!$relation->via) {
-                            $this->fillRelation($model, $item, $definition);
+                            $this->fillRelation($model, $item, $definition->formName);
                         }
 
                         $records[] = $model;
@@ -252,12 +252,16 @@ class LinkManyBehavior extends Behavior
      * Populates the relational model with input data.
      * @param ActiveRecord $model
      * @param array $data
-     * @param RelationDefinition $definition
+     * @param string $formName
      * @return void
      */
-    protected function fillRelation($model, $data, $definition)
+    protected function fillRelation($model, $data, $formName)
     {
-        $model->load($data, $definition->formName);
+        if ($model->hasMethod('fill')) {
+            $model->fill($data, $formName);
+        } else {
+            $model->load($data, $formName);
+        }
     }
 
     /**
