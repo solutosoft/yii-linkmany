@@ -6,7 +6,6 @@ use Yii;
 use yii\base\Behavior;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
-use yii\helpers\ArrayHelper;
 
 class LinkManyBehavior extends Behavior
 {
@@ -116,13 +115,14 @@ class LinkManyBehavior extends Behavior
 
                         $records[] = $model;
                     }
+                }
 
-                    foreach ($records as $i => $record) {
-                        $primaryKey = $this->normalizePrimaryKey($record->getPrimaryKey());
+                $references = $this->initReferences($records);
+                foreach ($relateds as $i => $related) {
+                    $primaryKey = $this->normalizePrimaryKey($related->getPrimaryKey());
 
-                        if (array_search($primaryKey, $references) === false) {
-                            $this->_deleteds[$name][] = $relateds[$i];
-                        }
+                    if (array_search($primaryKey, $references) === false) {
+                        $this->_deleteds[$name][] = $relateds[$i];
                     }
                 }
             }
@@ -137,13 +137,12 @@ class LinkManyBehavior extends Behavior
     public function afterSave()
     {
         $owner = $this->owner;
-        $relateds = $this->owner->getRelatedRecords();
+
         $class = get_class($owner);
         $class::populateRecord($owner, $owner->getAttributes());
 
         foreach ($this->relations as $definition) {
             $name = $definition->name;
-            $records = ArrayHelper::getValue($relateds, $name, []);
 
             $models = isset($this->_changeds[$name]) ? $this->_changeds[$name] : [];
             foreach ($models as $model) {
@@ -156,9 +155,8 @@ class LinkManyBehavior extends Behavior
             }
         }
 
-        foreach ($relateds as $name => $records) {
-            $owner->populateRelation($name, $records);
-        }
+        $this->_changeds = [];
+        $this->_deleteds = [];
     }
 
 

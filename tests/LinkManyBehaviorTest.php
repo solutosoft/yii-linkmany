@@ -4,6 +4,8 @@ namespace solutosoft\linkmany\tests;
 
 use solutosoft\linkmany\LinkManyBehavior;
 use solutosoft\linkmany\tests\models\Post;
+use solutosoft\linkmany\tests\models\Tag;
+
 //use solutosoft\linkmany\tests\models\PostLanguage;
 //use solutosoft\linkmany\tests\models\Tag;
 
@@ -136,5 +138,19 @@ class LinkManyBehaviorTest extends TestCase
         $post->refresh();
         $this->assertCount(2, $post->tags);
 
+    }
+
+    public function testUnlink()
+    {
+        $post = Post::findOne(1);
+        $post->fill([
+            'title' => 'modified title',
+            'content' => 'modified content',
+            'author_id' => 2,
+            'tags' => [3]
+        ],'');
+
+        $post->save();
+        $this->assertCount(1, $post->tags);
     }
 }
