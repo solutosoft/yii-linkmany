@@ -180,59 +180,45 @@ class LinkManyBehavior extends Behavior
         $owner = $this->owner;
         $name = $definition->name;
 
-        $relation = $owner->getRelation($name);
         $records = [];
+        $relation = $owner->getRelation($name);
 
-        if ($owner->getIsNewRecord()) {
-            foreach ($data[$name] as $item) {
+        $relateds =  $owner->{$name};
+        $references = $this->initReferences($relateds);
+        $relatedData = !$relation->via ? $this->normalizeData($data[$name], $relation) : $data[$name];
+
+        foreach ($relatedData as $item) {
+            $primaryKey = $this->extractPrimaryKey($item, $relation);
+            $index = !$owner->getIsNewRecord() ? array_search($primaryKey, $references) : false;
+
+            if ($index === false) {
                 $modelClass = $relation->modelClass;
                 $model = $relation->via ? $modelClass::findOne($item) : new $modelClass();
+            } else {
+                $model = $relateds[$index];
+            }
+
+            if ($model !== null) {
+                if ($index === false) {
+                    $this->_inserteds[$name][] = $model;
+                } else {
+                    $this->_updateds[$name][] = $model;
+                }
 
                 if (!$relation->via) {
                     $this->fillRelation($model, $item, $definition->formName);
                 }
 
-                if ($model !== null) {
-                    $this->_inserteds[$name][] = $model;
-                    $records[] = $model;
-                }
+                $records[] = $model;
             }
-        } else {
-            $relateds =  $owner->{$name};
-            $references = $this->initReferences($relateds);
-            $relatedData = !$relation->via ? $this->normalizeData($data[$name], $relation) : $data[$name];
+        }
 
-            foreach ($relatedData as $item) {
-                $primaryKey = $this->extractPrimaryKey($item, $relation);
+        $references = $this->initReferences($records);
+        foreach ($relateds as $i => $related) {
+            $primaryKey = $this->normalizePrimaryKey($related->getPrimaryKey());
 
-                if (($index = array_search($primaryKey, $references)) === false) {
-                    $modelClass = $relation->modelClass;
-                    $model = $relation->via ? $modelClass::findOne($item) : new $modelClass();
-
-                    if ($model !== null) {
-                        $this->_inserteds[$name][] = $model;
-                    }
-                } else {
-                    $model = $relateds[$index];
-                    $this->_updateds[$name][] = $model;
-                }
-
-                if ($model !== null) {
-                    if (!$relation->via) {
-                        $this->fillRelation($model, $item, $definition->formName);
-                    }
-
-                    $records[] = $model;
-                }
-            }
-
-            $references = $this->initReferences($records);
-            foreach ($relateds as $i => $related) {
-                $primaryKey = $this->normalizePrimaryKey($related->getPrimaryKey());
-
-                if (array_search($primaryKey, $references) === false) {
-                    $this->_deleteds[$name][] = $relateds[$i];
-                }
+            if (array_search($primaryKey, $references) === false) {
+                $this->_deleteds[$name][] = $relateds[$i];
             }
         }
 
