@@ -4,13 +4,22 @@ namespace solutosoft\linkmany\tests;
 
 use solutosoft\linkmany\LinkManyBehavior;
 use solutosoft\linkmany\tests\models\Post;
-use solutosoft\linkmany\tests\models\Tag;
 
-//use solutosoft\linkmany\tests\models\PostLanguage;
-//use solutosoft\linkmany\tests\models\Tag;
 
 class LinkManyBehaviorTest extends TestCase
 {
+    public function testInitSuccess()
+    {
+        new LinkManyBehavior([
+            'relations' => [
+                'relation_1',
+                'relation_2' => [
+                    'formName' => 'test'
+                ]
+            ]
+        ]);
+    }
+
     public function testInitException()
     {
         $this->setExpectedException('\yii\base\InvalidConfigException');
@@ -22,16 +31,12 @@ class LinkManyBehaviorTest extends TestCase
         ]);
     }
 
-    public function testInitSuccess()
+    public function testInvalidRelationValue()
     {
-        new LinkManyBehavior([
-            'relations' => [
-                'relation_1',
-                'relation_2' => [
-                    'formName' => 'test'
-                ]
-            ]
-        ]);
+        $this->setExpectedException('\yii\base\InvalidArgumentException');
+
+        $post = new Post();
+        $post->comments = null;
     }
 
     public function testFillNewRecord()
@@ -234,6 +239,7 @@ class LinkManyBehaviorTest extends TestCase
         $post->tags = [1];
 
         $post->save();
+        $post->refresh();
         $this->assertCount(1, $post->tags);
     }
 }

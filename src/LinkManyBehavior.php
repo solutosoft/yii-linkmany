@@ -4,6 +4,7 @@ namespace solutosoft\linkmany;
 
 use Yii;
 use yii\base\Behavior;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\base\UnknownPropertyException;
 use yii\db\ActiveRecord;
@@ -123,7 +124,7 @@ class LinkManyBehavior extends Behavior
             }
 
             $errors = [];
-            $models = isset($this->_inserteds[$name]) ? $this->_inserteds[$name] : [];
+            $models =  ArrayHelper::getValue($this->_inserteds, $name, []);
 
             foreach ($models as $model) {
                 if (!$model->validate()) {
@@ -149,6 +150,10 @@ class LinkManyBehavior extends Behavior
         try {
             parent::__set($name, $value);
         } catch (UnknownPropertyException $exception) {
+            if (!is_array($value)) {
+                throw new InvalidArgumentException("The '$name' property must be an array");
+            }
+
             $definition = $this->findDefinition($name);
             if ($definition !== null) {
                 $this->prepareRelation($definition, [$name => $value]);
