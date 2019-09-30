@@ -108,6 +108,7 @@ class LinkManyBehavior extends Behavior
         }
 
         $this->_inserteds = [];
+        $this->_updateds = [];
         $this->_deleteds = [];
     }
 
