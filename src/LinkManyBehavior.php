@@ -5,6 +5,7 @@ namespace solutosoft\linkmany;
 use Yii;
 use yii\base\Behavior;
 use yii\base\InvalidConfigException;
+use yii\base\UnknownPropertyException;
 use yii\db\ActiveRecord;
 
 class LinkManyBehavior extends Behavior
@@ -60,75 +61,14 @@ class LinkManyBehavior extends Behavior
      */
     public function fill($data, $formName = null)
     {
-        $owner = $this->owner;
-
-        if ($owner->load($data, $formName) === false) {
+        if ($this->owner->load($data, $formName) === false) {
             return false;
         }
 
         foreach ($this->relations as $definition) {
-            $name = $definition->name;
-
-            if (!isset($data[$name])) {
-                continue;
+            if (isset($data[$definition->name])) {
+                $this->prepareRelation($definition, $data);
             }
-
-            $relation = $owner->getRelation($name);
-            $records = [];
-
-            if ($owner->getIsNewRecord()) {
-                foreach ($data[$name] as $item) {
-                    $modelClass = $relation->modelClass;
-                    $model = $relation->via ? $modelClass::findOne($item) : new $modelClass();
-
-                    if (!$relation->via) {
-                        $this->fillRelation($model, $item, $definition->formName);
-                    }
-
-                    if ($model !== null) {
-                        $this->_changeds[$name][] = $model;
-                        $records[] = $model;
-                    }
-                }
-            } else {
-                $relateds =  $owner->{$name};
-                $references = $this->initReferences($relateds);
-                $relatedData = !$relation->via ? $this->normalizeData($data[$name], $relation) : $data[$name];
-
-                foreach ($relatedData as $item) {
-                    $primaryKey = $this->extractPrimaryKey($item, $relation);
-
-                    if (($index = array_search($primaryKey, $references)) === false) {
-                        $modelClass = $relation->modelClass;
-                        $model = $relation->via ? $modelClass::findOne($item) : new $modelClass();
-
-                        if ($model !== null) {
-                            $this->_changeds[$name][] = $model;
-                        }
-                    } else {
-                        $model = $relateds[$index];
-                    }
-
-                    if ($model !== null) {
-                        if (!$relation->via) {
-                            $this->fillRelation($model, $item, $definition->formName);
-                        }
-
-                        $records[] = $model;
-                    }
-                }
-
-                $references = $this->initReferences($records);
-                foreach ($relateds as $i => $related) {
-                    $primaryKey = $this->normalizePrimaryKey($related->getPrimaryKey());
-
-                    if (array_search($primaryKey, $references) === false) {
-                        $this->_deleteds[$name][] = $relateds[$i];
-                    }
-                }
-            }
-
-            $owner->populateRelation($name, $records);
         }
     }
 
@@ -183,6 +123,107 @@ class LinkManyBehavior extends Behavior
                 $this->owner->addError($name, $error);
             }
         }
+    }
+
+    /**
+     * PHP setter magic method.
+     * This method is overridden so that relation attribute can be accessed like property.
+     * @param string $name property name
+     * @param mixed $value property value
+     * @throws UnknownPropertyException if the property is not defined
+     */
+    public function __set($name, $value)
+    {
+        try {
+            parent::__set($name, $value);
+        } catch (UnknownPropertyException $exception) {
+            $definition = $this->findDefinition($name);
+            if ($definition !== null) {
+                $this->prepareRelation($definition, [$name => $value]);
+            } else {
+                throw $exception;
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function canSetProperty($name, $checkVars = true)
+    {
+        if (parent::canSetProperty($name, $checkVars)) {
+            return true;
+        }
+        return ($this->findDefinition($name) !== null);
+    }
+
+    /**
+     * Prepares the relations changes
+     * @param RelationDefinition $definition
+     * @param array $data
+     * @return void
+     */
+    protected function prepareRelation($definition, $data)
+    {
+        $owner = $this->owner;
+        $name = $definition->name;
+
+        $relation = $owner->getRelation($name);
+        $records = [];
+
+        if ($owner->getIsNewRecord()) {
+            foreach ($data[$name] as $item) {
+                $modelClass = $relation->modelClass;
+                $model = $relation->via ? $modelClass::findOne($item) : new $modelClass();
+
+                if (!$relation->via) {
+                    $this->fillRelation($model, $item, $definition->formName);
+                }
+
+                if ($model !== null) {
+                    $this->_changeds[$name][] = $model;
+                    $records[] = $model;
+                }
+            }
+        } else {
+            $relateds =  $owner->{$name};
+            $references = $this->initReferences($relateds);
+            $relatedData = !$relation->via ? $this->normalizeData($data[$name], $relation) : $data[$name];
+
+            foreach ($relatedData as $item) {
+                $primaryKey = $this->extractPrimaryKey($item, $relation);
+
+                if (($index = array_search($primaryKey, $references)) === false) {
+                    $modelClass = $relation->modelClass;
+                    $model = $relation->via ? $modelClass::findOne($item) : new $modelClass();
+
+                    if ($model !== null) {
+                        $this->_changeds[$name][] = $model;
+                    }
+                } else {
+                    $model = $relateds[$index];
+                }
+
+                if ($model !== null) {
+                    if (!$relation->via) {
+                        $this->fillRelation($model, $item, $definition->formName);
+                    }
+
+                    $records[] = $model;
+                }
+            }
+
+            $references = $this->initReferences($records);
+            foreach ($relateds as $i => $related) {
+                $primaryKey = $this->normalizePrimaryKey($related->getPrimaryKey());
+
+                if (array_search($primaryKey, $references) === false) {
+                    $this->_deleteds[$name][] = $relateds[$i];
+                }
+            }
+        }
+
+        $owner->populateRelation($name, $records);
     }
 
      /**
@@ -303,5 +344,20 @@ class LinkManyBehavior extends Behavior
             }
         }
         return $result;
+    }
+
+    /**
+     * Finds relation definition by name
+     * @param string $name The definition name
+     * @return RelationDefinition
+     */
+    private function findDefinition($name)
+    {
+        foreach ($this->relations as $relation) {
+            if ($relation->name === $name) {
+                return $relation;
+            }
+        }
+        return null;
     }
 }

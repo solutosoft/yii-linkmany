@@ -195,4 +195,21 @@ class LinkManyBehaviorTest extends TestCase
         $this->assertArrayHasKey('comments', $errors);
         $this->assertCount(2, $errors['comments']);
     }
+
+
+    public function testSetRelation()
+    {
+        $post = Post::findOne(1);
+        $post->comments = [
+            ['subject' => 'new subject', 'content' => 'new content']
+        ];
+
+        $post->save();
+        $this->assertCount(1, $post->comments);
+
+        $post->tags = [1];
+
+        $post->save();
+        $this->assertCount(1, $post->tags);
+    }
 }
