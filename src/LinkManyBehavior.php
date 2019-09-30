@@ -333,7 +333,7 @@ class LinkManyBehavior extends Behavior
             $primaryKey = $modelClass::primaryKey();
 
             if (count($primaryKey) === 1) {
-                return ArrayHelper::getColumn($data, $primaryKey[0]);
+                return ArrayHelper::getValue($data, $primaryKey[0]);
             }
 
             $result = [];
