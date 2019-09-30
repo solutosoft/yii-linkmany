@@ -7,6 +7,7 @@ use yii\base\Behavior;
 use yii\base\InvalidConfigException;
 use yii\base\UnknownPropertyException;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 class LinkManyBehavior extends Behavior
 {
@@ -23,7 +24,12 @@ class LinkManyBehavior extends Behavior
     /**
      * @var \yii\db\ActiveRecord[] the changed models
      */
-    private $_changeds = [];
+    private $_inserteds = [];
+
+    /**
+     * @var \yii\db\ActiveRecord[] the deleted models
+     */
+    private $_updateds = [];
 
     /**
      * @var \yii\db\ActiveRecord[] the deleted models
@@ -85,18 +91,23 @@ class LinkManyBehavior extends Behavior
         foreach ($this->relations as $definition) {
             $name = $definition->name;
 
-            $models = isset($this->_changeds[$name]) ? $this->_changeds[$name] : [];
+            $models = ArrayHelper::getValue($this->_inserteds, $name, []);
             foreach ($models as $model) {
                 $owner->link($name, $model);
             }
 
-            $models = isset($this->_deleteds[$name]) ? $this->_deleteds[$name] : [];
+            $models = ArrayHelper::getValue($this->_updateds, $name, []);
+            foreach ($models as $model) {
+               $model->save(false);
+            }
+
+            $models = ArrayHelper::getValue($this->_deleteds, $name, []);
             foreach ($models as $model) {
                 $owner->unlink($name, $model, $definition->deleteOnUnlink);
             }
         }
 
-        $this->_changeds = [];
+        $this->_inserteds = [];
         $this->_deleteds = [];
     }
 
@@ -111,7 +122,7 @@ class LinkManyBehavior extends Behavior
             }
 
             $errors = [];
-            $models = isset($this->_changeds[$name]) ? $this->_changeds[$name] : [];
+            $models = isset($this->_inserteds[$name]) ? $this->_inserteds[$name] : [];
 
             foreach ($models as $model) {
                 if (!$model->validate()) {
@@ -181,7 +192,7 @@ class LinkManyBehavior extends Behavior
                 }
 
                 if ($model !== null) {
-                    $this->_changeds[$name][] = $model;
+                    $this->_inserteds[$name][] = $model;
                     $records[] = $model;
                 }
             }
@@ -198,10 +209,11 @@ class LinkManyBehavior extends Behavior
                     $model = $relation->via ? $modelClass::findOne($item) : new $modelClass();
 
                     if ($model !== null) {
-                        $this->_changeds[$name][] = $model;
+                        $this->_inserteds[$name][] = $model;
                     }
                 } else {
                     $model = $relateds[$index];
+                    $this->_updateds[$name][] = $model;
                 }
 
                 if ($model !== null) {
@@ -309,22 +321,26 @@ class LinkManyBehavior extends Behavior
      * Extracts primary key from data
      * @param array $data
      * @param \yii\db\ActiveQuery $relation
-     * @return array
+     * @return mixed
      */
     protected function extractPrimaryKey($data, $relation)
     {
         if ($relation->via) {
             return $data;
         } else {
-            $result = [];
             $modelClass = $relation->modelClass;
+            $primaryKey = $modelClass::primaryKey();
 
-            foreach ($modelClass::primaryKey() as $key) {
+            if (count($primaryKey) === 1) {
+                return ArrayHelper::getColumn($data, $primaryKey[0]);
+            }
+
+            $result = [];
+            foreach ($primaryKey as $key) {
                 if (isset($data[$key])) {
                     $result[$key] = $data[$key];
                 }
             }
-
             return $result;
         }
     }

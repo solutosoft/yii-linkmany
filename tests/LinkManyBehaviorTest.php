@@ -166,6 +166,30 @@ class LinkManyBehaviorTest extends TestCase
 
     }
 
+    public function testUpdateHasMany()
+    {
+        $post = Post::findOne(1);
+        $post->fill([
+            'title' => 'modified title',
+            'comments' => [
+                [
+                    'id' => 1,
+                    'subject' => 'modified subject',
+                    'content' => 'modified content'
+                ]
+            ]
+        ],'');
+
+        $post->save();
+        $post = Post::findOne(1);
+        $this->assertCount(1, $post->comments);
+
+        $comment = $post->comments[0];
+        $this->assertEquals('modified subject', $comment->subject);
+        $this->assertEquals('modified content', $comment->content);
+
+    }
+
     public function testUnlink()
     {
         $post = Post::findOne(1);
