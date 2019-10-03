@@ -25,4 +25,9 @@ class RelationDefinition extends BaseObject
      * @var boolean whether to delete the pivot model or table row on unlink.
      */
     public $deleteOnUnlink = true;
+
+    /**
+     * @var string The scenario that will be used
+     */
+    public $scenario;
 }

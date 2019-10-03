@@ -4,7 +4,8 @@ namespace solutosoft\linkmany\tests;
 
 use solutosoft\linkmany\LinkManyBehavior;
 use solutosoft\linkmany\tests\models\Post;
-
+use solutosoft\linkmany\tests\models\PostComment;
+use solutosoft\linkmany\tests\models\Tag;
 
 class LinkManyBehaviorTest extends TestCase
 {
@@ -241,5 +242,44 @@ class LinkManyBehaviorTest extends TestCase
         $post->save();
         $post->refresh();
         $this->assertCount(1, $post->tags);
+    }
+
+    public function testScenario()
+    {
+        $post = Post::findOne(1);
+        $post->attachBehavior('linkMany', new LinkManyBehavior([
+           'relations' => [
+                'tags' => [
+                    'scenario' => Tag::SCENARIO_LINK
+                ],
+                'comments' => [
+                    'scenario' => PostComment::SCENARIO_LINK
+                ]
+            ]
+        ]));
+
+        $post->fill([
+            'title' => 'modified title',
+            'tags' => [1, 3],
+            'comments' => [
+                [
+                    'id' => 1,
+                    'subject' => 'modified subject',
+                    'content' => 'modified content'
+                ], [
+                    'subject' => 'new subject',
+                    'content' => 'new content'
+                ]
+            ]
+        ], '');
+
+        foreach ($post->tags as $tag) {
+            $this->assertEquals(Tag::SCENARIO_LINK, $tag->scenario);
+        }
+
+        foreach ($post->comments as $comment) {
+            $this->assertEquals(PostComment::SCENARIO_LINK, $comment->scenario);
+        }
+
     }
 }

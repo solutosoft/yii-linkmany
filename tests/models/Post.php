@@ -19,7 +19,7 @@ class Post extends ActiveRecord
     public function behaviors()
     {
         return [
-            'relation' => [
+            'linkMany' => [
                 'class' => LinkManyBehavior::class,
                 'relations' => [
                     'languages',

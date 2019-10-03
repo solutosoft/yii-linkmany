@@ -204,6 +204,10 @@ class LinkManyBehavior extends Behavior
             }
 
             if ($model !== null) {
+                if ($definition->scenario !== null) {
+                    $model->scenario = $definition->scenario;
+                }
+
                 if ($index === false) {
                     $this->_inserteds[$name][] = $model;
                 } else {

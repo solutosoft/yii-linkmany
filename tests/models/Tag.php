@@ -10,6 +10,8 @@ use yii\db\ActiveRecord;
  */
 class Tag extends ActiveRecord
 {
+    const SCENARIO_LINK = 'tag_link';
+
     /**
      * @inheritdoc
      */

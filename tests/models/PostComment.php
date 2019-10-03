@@ -10,6 +10,7 @@ use yii\db\ActiveRecord;
  */
 class PostComment extends ActiveRecord
 {
+    const SCENARIO_LINK = 'post_link';
 
     /**
      * @inheritdoc
