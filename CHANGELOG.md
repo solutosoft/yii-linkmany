@@ -1,8 +1,8 @@
 Yii LinkMany Change Log
 =======================
 
-1.0.0 Under development
------------------------
+1.0.0 Oct 08, 2019
+------------------
 
 - Ability to define scenario for related records
 
