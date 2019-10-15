@@ -234,15 +234,17 @@ class LinkManyBehavior extends Behavior
         $owner->populateRelation($name, $records);
     }
 
-     /**
+    /**
      * Creates definition objects and initializes them.
      */
     protected function initRelations()
     {
         foreach ($this->relations as $i => $value) {
+            $indexed = is_string($i);
+
             if (is_string($value)) {
                 $name = $value;
-            } elseif (is_string($i)) {
+            } elseif ($indexed) {
                 $name = $i;
             } else {
                 throw new InvalidConfigException('The "relations" property must be a map of RelationDefinition object');
@@ -257,7 +259,15 @@ class LinkManyBehavior extends Behavior
                 $config = array_merge($config, $value);
             }
 
-            $this->relations[$i] = Yii::createObject($config);
+            $definition = Yii::createObject($config);
+
+            if ($indexed) {
+                unset($this->relations[$i]);
+                $this->relations[] = $definition;
+            } else {
+                $this->relations[$i] = $definition;
+            }
+
         }
     }
 

@@ -1,6 +1,11 @@
 Yii LinkMany Change Log
 =======================
 
+1.0.1 Under development
+-----------------------
+
+- Fixes relations property initialization
+
 1.0.0 Oct 08, 2019
 ------------------
 
