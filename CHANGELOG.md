@@ -1,8 +1,8 @@
 Yii LinkMany Change Log
 =======================
 
-1.0.1 Under development
------------------------
+1.0.1 Jan 17, 2022
+------------------
 
 - Fixes relations property initialization
 - Fixes no validation in updated models
