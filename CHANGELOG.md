@@ -5,6 +5,7 @@ Yii LinkMany Change Log
 -----------------------
 
 - Fixes relations property initialization
+- Fixes no validation in updated models
 
 1.0.0 Oct 08, 2019
 ------------------
