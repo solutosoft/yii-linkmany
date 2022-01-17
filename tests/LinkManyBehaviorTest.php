@@ -11,7 +11,7 @@ class LinkManyBehaviorTest extends TestCase
 {
     public function testInitSuccess()
     {
-        new LinkManyBehavior([
+        $behavior = new LinkManyBehavior([
             'relations' => [
                 'relation_1',
                 'relation_2' => [
@@ -19,12 +19,13 @@ class LinkManyBehaviorTest extends TestCase
                 ]
             ]
         ]);
+
+        $this->assertCount(2, $behavior->relations);
     }
 
     public function testInitException()
     {
-        $this->setExpectedException('\yii\base\InvalidConfigException');
-
+        $this->expectException('\yii\base\InvalidConfigException');
         new LinkManyBehavior([
             'relations' => [
                 ['invalid' => true]
@@ -34,8 +35,7 @@ class LinkManyBehaviorTest extends TestCase
 
     public function testInvalidRelationValue()
     {
-        $this->setExpectedException('\yii\base\InvalidArgumentException');
-
+        $this->expectException('\yii\base\InvalidArgumentException');
         $post = new Post();
         $post->comments = null;
     }
