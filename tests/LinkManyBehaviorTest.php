@@ -215,7 +215,11 @@ class LinkManyBehaviorTest extends TestCase
         $post = Post::findOne(1);
         $post->fill([
             'comments' => [
-                [],[]
+                [],
+                [
+                    'id' => 1,
+                    'subject' => 1234
+                ]
             ]
         ],'');
 

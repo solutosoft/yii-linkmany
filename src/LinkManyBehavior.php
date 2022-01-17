@@ -124,7 +124,12 @@ class LinkManyBehavior extends Behavior
             }
 
             $errors = [];
-            $models =  ArrayHelper::getValue($this->_inserteds, $name, []);
+            $models = ArrayHelper::getValue($this->_inserteds, $name, []);
+            $updateds = ArrayHelper::getValue($this->_updateds, $name, []);
+
+            foreach($updateds as $model) {
+                $models[] = $model;
+            }
 
             foreach ($models as $model) {
                 if (!$model->validate()) {
