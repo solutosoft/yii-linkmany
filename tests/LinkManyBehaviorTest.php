@@ -226,8 +226,8 @@ class LinkManyBehaviorTest extends TestCase
         $post->validate();
 
         $errors = $post->getErrors();
-        $this->assertArrayHasKey('comments', $errors);
-        $this->assertCount(2, $errors['comments']);
+        $this->assertArrayHasKey('comments[0]', $errors);
+        $this->assertArrayHasKey('comments[1]', $errors);
     }
 
     public function testValidateErrorIndex()
