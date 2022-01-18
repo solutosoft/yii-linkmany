@@ -230,6 +230,35 @@ class LinkManyBehaviorTest extends TestCase
         $this->assertCount(2, $errors['comments']);
     }
 
+    public function testValidateErrorIndex()
+    {
+        $post = Post::findOne(1);
+        $post->fill([
+            'comments' => [
+                [
+                    'subject' => 'Valid subject',
+                    'content' => 'Valid content',
+                ],[
+                    'subject' => 'Valid subject',
+                    'content' => 6789
+                ],[
+                    'subject' => 1234
+                ],
+            ]
+        ],'');
+
+        $post->validate();
+
+        $this->assertEquals([
+            'comments[1]' => [
+                'Content must be a string.'
+            ],
+            'comments[2]' => [
+                'Subject must be a string.',
+                'Content cannot be blank.'
+            ]
+        ], $post->getErrors());
+    }
 
     public function testSetRelation()
     {

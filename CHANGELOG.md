@@ -1,6 +1,11 @@
 Yii LinkMany Change Log
 =======================
 
+1.0.2 Under development
+-----------------------
+
+- Show validation index error
+
 1.0.1 Jan 17, 2022
 ------------------
 

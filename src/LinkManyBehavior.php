@@ -117,28 +117,24 @@ class LinkManyBehavior extends Behavior
     public function afterValidate()
     {
         foreach ($this->relations as $definition) {
-            $name = $definition->name;
+            $relationName = $definition->name;
 
             if (!$definition->validate) {
                 continue;
             }
 
-            $errors = [];
-            $models = ArrayHelper::getValue($this->_inserteds, $name, []);
-            $updateds = ArrayHelper::getValue($this->_updateds, $name, []);
+            $models = ArrayHelper::getValue($this->_inserteds, $relationName, []);
+            $updateds = ArrayHelper::getValue($this->_updateds, $relationName, []);
 
             foreach($updateds as $model) {
                 $models[] = $model;
             }
 
-            foreach ($models as $model) {
+            foreach ($models as $i => $model) {
                 if (!$model->validate()) {
-                    $errors[] = $model->getErrors();
+                    $attribute = $relationName . "[$i]";
+                    $this->addError($model, $attribute);
                 }
-            }
-
-            foreach ($errors as $error) {
-                $this->owner->addError($name, $error);
             }
         }
     }
@@ -386,5 +382,20 @@ class LinkManyBehavior extends Behavior
             }
         }
         return null;
+    }
+
+    /**
+     * Attach errors to owner relational attributes
+     * @param \yii\db\ActiveRecord $model
+     * @param string $relationName
+     * @return void
+     */
+    private function addError($model, $relationName)
+    {
+        foreach ($model->getErrors() as $attributeErrors) {
+            foreach ($attributeErrors as $error) {
+                $this->owner->addError($relationName, $error);
+            }
+        }
     }
 }
