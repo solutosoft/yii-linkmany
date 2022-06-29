@@ -333,7 +333,16 @@ class LinkManyBehavior extends Behavior
     protected function extractPrimaryKey($data, $relation)
     {
         if ($relation->via) {
-            return $data;
+            if (is_scalar($data)) {
+                return $data;
+            }
+
+            $result = [];
+            foreach ($relation->via->link as $key => $value) {
+                $result[] = $data[$value];
+            }
+
+            return count($result) === 1 ?  $result[0] : $result;
         } else {
             $modelClass = $relation->modelClass;
             $primaryKey = $modelClass::primaryKey();

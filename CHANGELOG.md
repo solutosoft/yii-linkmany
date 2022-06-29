@@ -1,6 +1,11 @@
 Yii LinkMany Change Log
 =======================
 
+1.1.0 under development
+-----------------------
+
+- Fixes extracting key values for `viaTable` relationships
+
 1.1.0 Jan 18, 2022
 ------------------
 
