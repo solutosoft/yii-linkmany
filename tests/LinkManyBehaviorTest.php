@@ -5,6 +5,7 @@ namespace solutosoft\linkmany\tests;
 use solutosoft\linkmany\LinkManyBehavior;
 use solutosoft\linkmany\tests\models\Post;
 use solutosoft\linkmany\tests\models\PostComment;
+use solutosoft\linkmany\tests\models\PostLanguage;
 use solutosoft\linkmany\tests\models\Tag;
 
 class LinkManyBehaviorTest extends TestCase
@@ -40,6 +41,28 @@ class LinkManyBehaviorTest extends TestCase
         $post->comments = null;
     }
 
+    public function testFillNewRecordWithModelElement()
+    {
+        $post = new Post();
+        $post->fill([
+            'title' => 'new title',
+            'content' => 'new content',
+            'author_id' => 2,
+            'languages' => [
+                new PostLanguage([
+                    'language' => 'ja',
+                    'url' => '/posts/ja'
+                ])
+            ]
+        ], '');
+
+        $this->assertCount(1, $post->languages);
+
+        $lang = $post->languages[0];
+        $this->assertTrue($lang->getIsNewRecord());
+
+    }
+
     public function testFillNewRecord()
     {
         $post = new Post();
@@ -50,10 +73,10 @@ class LinkManyBehaviorTest extends TestCase
             'tags' => [1, 2],
             'languages' => [
                 [
-                    'lang' => 'ja',
+                    'language' => 'ja',
                     'url' => '/posts/ja'
                 ],[
-                    'lang' => 'en',
+                    'language' => 'en',
                     'url' => '/posts/en-modified'
                 ]
             ]
@@ -81,10 +104,10 @@ class LinkManyBehaviorTest extends TestCase
             'tags' => [1, 2],
             'languages' => [
                 [
-                    'lang' => 'ja',
+                    'language' => 'ja',
                     'url' => '/posts/ja'
                 ],[
-                    'lang' => 'en',
+                    'language' => 'en',
                     'url' => '/posts/en-modified'
                 ]
             ]

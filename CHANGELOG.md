@@ -1,6 +1,12 @@
 Yii LinkMany Change Log
 =======================
 
+1.1.2 Under development
+-----------------------
+
+- Fixes issue loading relationship with model element
+
+
 1.1.1 Jun 29, 2022
 ------------------
 
