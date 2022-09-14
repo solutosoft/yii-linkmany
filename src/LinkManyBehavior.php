@@ -200,7 +200,7 @@ class LinkManyBehavior extends Behavior
             if ($index === false) {
                 $modelClass = $relation->modelClass;
                 $model = $relation->via
-                    ? $modelClass::findOne($item)
+                    ? $modelClass::findOne($primaryKey)
                     : ($item instanceof $modelClass ? $item : new $modelClass());
             } else {
                 $model = $relateds[$index];

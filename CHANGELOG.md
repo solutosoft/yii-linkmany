@@ -1,11 +1,15 @@
 Yii LinkMany Change Log
 =======================
 
+1.1.3 Sep 14, 2022
+------------------
+
+- Use primary key to find model in via a junction table relations
+
 1.1.2 Sep 01, 2022
 ------------------
 
 - Fixes issue loading relationship with model element
-
 
 1.1.1 Jun 29, 2022
 ------------------
