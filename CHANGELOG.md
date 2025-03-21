@@ -1,6 +1,11 @@
 Yii LinkMany Change Log
 =======================
 
+1.1.4 Under development
+-----------------------
+
+- Avoid validating many-to-many relationships by default
+
 1.1.3 Sep 14, 2022
 ------------------
 

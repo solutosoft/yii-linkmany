@@ -19,7 +19,7 @@ class RelationDefinition extends BaseObject
     /**
      * @var string whether the relation validation is required.
      */
-    public $validate = true;
+    public $validate = null;
 
     /**
      * @var boolean whether to delete the pivot model or table row on unlink.

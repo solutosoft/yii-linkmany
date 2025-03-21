@@ -119,7 +119,11 @@ class LinkManyBehavior extends Behavior
         foreach ($this->relations as $definition) {
             $relationName = $definition->name;
 
-            if (!$definition->validate) {
+            $relation = $this->owner->getRelation($relationName);
+
+            $validate = $definition->validate === null ? !$relation->via : $definition->validate;
+
+            if (!$validate) {
                 continue;
             }
 
@@ -131,7 +135,7 @@ class LinkManyBehavior extends Behavior
             }
 
             foreach ($models as $i => $model) {
-                if (!$model->validate()) {
+                if (!$relation->via && !$model->validate()) {
                     $attribute = $relationName . "[$i]";
                     $this->addError($model, $attribute);
                 }
